@@ -1,5 +1,6 @@
 ;; set font
-(set-face-attribute 'default nil :font "Iosevka 10")
+(if (display-graphic-p)
+    (set-face-attribute 'default nil :font "Input Mono Condensed 11"))
 
 ;; global variables
 (setq inhibit-startup-screen t
@@ -12,8 +13,10 @@
       sentence-end-double-space nil
       custom-file "~/.emacs.d/custom.el")
 
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+(if (display-graphic-p)
+    (tool-bar-mode -1))
+(if (display-graphic-p)
+    (scroll-bar-mode -1))
 (menu-bar-mode -1)
 
 
@@ -22,8 +25,6 @@
               tab-width 4
               show-trailing-whitespace t
               c-basic-offset 4)
-
-;; modes
 
 
 ;; global keybindings
@@ -45,6 +46,13 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (require 'use-package)
+
+
+;; Evil
+(use-package evil
+  :ensure t
+  :config
+  (evil-mode 1))
 
 
 ;; Ivy
@@ -76,41 +84,6 @@
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 
 
-;; Colors
-(use-package dracula-theme
-  :ensure t
-  :config
-  (load-theme 'dracula t))
-
-;; Scala
-(use-package ensime
-  :ensure t
-  :pin melpa)
-
-(use-package sbt-mode
-  :pin melpa)
-
-(use-package scala-mode
-  :pin melpa)
-
-
-;; Haskell
-(use-package intero
-  :ensure t
-  :config
-  (add-hook 'haskell-mode-hook 'intero-mode))
-
-(require 'haskell-mode)
-(define-key haskell-mode-map [f5] (lambda () (interactive) (compile "stack build --fast")))
-(define-key haskell-mode-map [f12] 'intero-devel-reload)
-
-(use-package hindent
-  :ensure t
-  :config
-  (add-hook 'haskell-mode-hook #'hindent-mode)
-  (setq hindent-style "johann-tibell"))
-
-
 ;; Markups
 (use-package yaml-mode
   :ensure t)
@@ -122,15 +95,3 @@
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
-
-
-;; Ledger
-(use-package ledger-mode
-  :ensure t
-  :mode (("\\.ledger$" . ledger-mode)
-         ("\\.dat$" . ledger-mode))
-  :config
-  (setq ledger-post-auto-adjust-amounts t))
-
-(use-package flycheck-ledger
-  :ensure t)

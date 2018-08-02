@@ -77,6 +77,20 @@
 
 
 
+;; Rust
+(use-package rust-mode
+  :ensure t
+  :config
+  (setq rust-format-on-save t))
+
+
+
+;; Haskell
+(use-package haskell-mode
+  :ensure t)
+
+
+
 ;; Org
 (use-package org
   :ensure t)

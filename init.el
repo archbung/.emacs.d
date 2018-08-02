@@ -1,3 +1,8 @@
+;;; init.el --- My humble Emacs config
+;;; Commentary:
+;;; Code:
+
+
 (set-frame-font "Inconsolata 12" nil t)
 
 (menu-bar-mode -1)
@@ -77,6 +82,14 @@
 
 
 
+;; Flycheck
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode))
+
+
+
 ;; Rust
 (use-package rust-mode
   :ensure t
@@ -101,3 +114,6 @@
 (use-package ledger-mode
   :ensure t
   :mode "\\.ledger$")
+
+(provide 'init)
+;;; init.el ends here

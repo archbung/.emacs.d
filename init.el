@@ -1,9 +1,9 @@
-;;; init.el --- My humble Emacs config
+;;; init.el --- A humble Emacs config
 ;;; Commentary:
 ;;; Code:
 
 
-(set-frame-font "Inconsolata 12" nil t)
+(set-frame-font "Hack 10" nil t)
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -11,8 +11,28 @@
 
 (setq custom-file "~/.emacs.d/custom.el"
       inhibit-startup-screen t
-      make-backup-files nil)
+      make-backup-files nil
+      auto-save-default nil)
 
+;;###autoload
+(defun keychain-refresh-environment ()
+  "Set ssh-agent and gpg-agent environment variables.
+Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
+`process-environment` according to keychain"
+  (interactive)
+  (let* ((ssh (shell-command-to-string "keychain -q --noask --agent ssh --eval"))
+	 (gpg (shell-command-to-string "keychain -q --noask --agent gpg --eval")))
+    (list (and ssh
+	       (string-match "SSH_AUTH_SOCK[=\s]\\([^\s;\n]*\\)" ssh)
+	       (setenv "SSH_AUTH_SOCK" (match-string 1 ssh)))
+	  (and ssh
+	       (string-match "SSH_AGENT_PID[=\s]\\([0-9]*\\)?" ssh)
+	       (setenv "SSH_AGENT_PID" (match-string 1 ssh)))
+	  (and gpg
+	       (string-match "GPG_AGENT_INFO[=\s]\\([^\s;\n]*\\)" gpg)
+	       (setenv "GPG_AGENT_INFO" (match-string 1 gpg))))))
+
+(keychain-refresh-environment)
 
 
 ;; Use-package
@@ -23,10 +43,10 @@
 	("melpa" . "https://melpa.org/packages/")
 	("melpa-stable" . "https://stable.melpa.org/packages/"))
       package-archive-priorities
-      '(("melpa-stable" . 100)
+      '(("melpa-stable" . 20)
 	("elpa" . 50)
 	("org" . 20)
-	("melpa" . 10)))
+	("melpa" . 100)))
 
 (package-initialize)
 (when (not package-archive-contents)
@@ -36,29 +56,13 @@
 (require 'use-package)
 
 
-
-;; Eye candies
-(use-package doom-themes
-  :ensure t
-  :config
-  (load-theme 'doom-one t))
-
-
-
 ;; Evil mode
 (use-package evil
   :ensure t
+  :init
+  (setq evil-want-abbrev-expand-on-insert-exit nil)
   :config
   (evil-mode 1))
-
-(use-package evil-magit
-  :ensure t)
-
-(use-package evil-surround
-  :ensure t
-  :config
-  (global-evil-surround-mode 1))
-
 
 
 ;; Ivy
@@ -75,45 +79,14 @@
 	"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
 
-
-;; Magit
-(use-package magit
+;; Proof General
+(use-package proof-general
   :ensure t)
 
-
-
-;; Flycheck
-(use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode))
-
-
-
-;; Rust
-(use-package rust-mode
-  :ensure t
-  :config
-  (setq rust-format-on-save t))
-
-
-
-;; Haskell
-(use-package haskell-mode
-  :ensure t)
-
-
-
-;; Org
-(use-package org
-  :ensure t)
-
-
-
-;; Ledger mode
+;; Ledger
 (use-package ledger-mode
-  :ensure t
-  :mode "\\.ledger$")
+  :ensure t)
+
 
 (provide 'init)
 ;;; init.el ends here

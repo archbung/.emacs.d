@@ -12,6 +12,7 @@
 (setq custom-file "~/.emacs.d/custom.el"
       inhibit-startup-screen t
       make-backup-files nil
+      ring-bell-function 'ignore
       auto-save-default nil)
 
 ;;###autoload
@@ -65,7 +66,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (evil-mode 1))
 
 
-;; Ivy
+;; Essentials
 (use-package counsel
   :ensure t
   :config
@@ -86,6 +87,16 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 ;; Ledger
 (use-package ledger-mode
   :ensure t)
+
+
+;; Haskell
+(package-install 'intero)
+(add-hook 'haskell-mode-hook 'intero-mode)
+
+(use-package hindent
+  :ensure t
+  :config
+  (setq hindent-style 'johan-tibell))
 
 
 (provide 'init)

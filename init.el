@@ -89,6 +89,17 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :ensure t
   :bind ("M-o" . ace-window))
 
+(use-package undo-tree
+  :ensure t
+  :init
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+  (add-hook 'undo-tree-visualizer-mode-hook
+	    (lambda ()
+	      (undo-tree-visualizer-selection-mode)
+	      (setq display-line-numbers nil)))
+  :config
+  (global-undo-tree-mode 1))
+
 
 ;; Proof General
 (use-package proof-general

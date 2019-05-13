@@ -85,6 +85,10 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :config
   (setq ffip-use-rust-fd t))
 
+(use-package ace-window
+  :ensure t
+  :bind ("M-o" . ace-window))
+
 
 ;; Proof General
 (use-package proof-general

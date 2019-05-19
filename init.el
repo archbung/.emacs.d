@@ -8,6 +8,7 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(show-paren-mode 1)
 
 (setq custom-file "~/.emacs.d/custom.el"
       inhibit-startup-screen t
@@ -118,6 +119,19 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :ensure t
   :config
   (setq hindent-style 'johan-tibell))
+
+
+;; Rust
+(use-package rust-mode
+  :ensure t
+  :config
+  (setq rust-format-on-save t))
+
+
+;; Z3
+(use-package z3-mode
+  :init
+  :ensure t)
 
 
 (provide 'init)

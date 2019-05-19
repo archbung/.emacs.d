@@ -5,15 +5,30 @@
 
 (set-frame-font "Hack 10" nil t)
 
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(show-paren-mode 1)
+(unless (eq window-system 'ns)
+  (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (fboundp 'menu-bar-mode)
+  (menu-bar-mode -1))
+(when (fboundp 'scroll-bar-mode)
+  (scroll-bar-mode -1))
 
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
+(require 'saveplace)
+(setq-default save-place t)
+
+(show-paren-mode 1)
+(setq-default indent-tabs-mode nil)
 (setq custom-file "~/.emacs.d/custom.el"
       inhibit-startup-screen t
       make-backup-files nil
+      require-final-newline t
       ring-bell-function 'ignore
+      load-prefer-newer t
+      save-place-file (concat user-emacs-directory "places")
       auto-save-default nil)
 
 ;;###autoload
@@ -112,8 +127,10 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 
 ;; Haskell
-(package-install 'intero)
-(add-hook 'haskell-mode-hook 'intero-mode)
+(use-package intero
+  :ensure t
+  :init
+  (add-hook 'haskell-mode-hook 'intero-mode))
 
 (use-package hindent
   :ensure t

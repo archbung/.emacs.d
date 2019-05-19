@@ -49,6 +49,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	       (string-match "GPG_AGENT_INFO[=\s]\\([^\s;\n]*\\)" gpg)
 	       (setenv "GPG_AGENT_INFO" (match-string 1 gpg))))))
 
+(setq epa-pinentry-mode 'loopback)
 (keychain-refresh-environment)
 
 
@@ -73,7 +74,10 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 (require 'use-package)
 
 
-;; Evil mode
+;; Essentials
+(use-package pinentry
+  :ensure t)
+
 (use-package evil
   :ensure t
   :init
@@ -81,8 +85,18 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :config
   (evil-mode 1))
 
+(use-package general
+  :ensure t
+  :config
+  (general-create-definer leader-def :prefix "SPC")
+  (leader-def 'normal
+    "f p" 'find-file-in-project
+    "f r" 'counsel-recentf
+    "f f" 'counsel-find-file
+    "g s" 'magit-status
+    "/"   'swiper)
+  (general-create-definer localleader-def :prefix "SPC m"))
 
-;; Essentials
 (use-package counsel
   :ensure t
   :config
@@ -96,6 +110,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
 (use-package magit
+  ; TODO: commit signing still does not work
   :ensure t)
 
 (use-package evil-magit
@@ -105,12 +120,12 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 (use-package find-file-in-project
   :ensure t
-  :bind ("C-c C-f" . find-file-in-project)
   :config
   (setq ffip-use-rust-fd t))
 
 (use-package ace-window
   :ensure t
+  ; TODO: learn how this package works
   :bind ("M-o" . ace-window))
 
 (use-package undo-tree

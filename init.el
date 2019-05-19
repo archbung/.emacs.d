@@ -95,6 +95,14 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	counsel-grep-base-command
 	"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
+(use-package magit
+  :ensure t)
+
+(use-package evil-magit
+  :ensure t
+  :config
+  (evil-define-key evil-magit-state magit-mode-map "?" 'evil-search-backward))
+
 (use-package find-file-in-project
   :ensure t
   :bind ("C-c C-f" . find-file-in-project)

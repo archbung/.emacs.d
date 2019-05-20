@@ -84,7 +84,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 ;       - haskell-interactive-popup-errors
 (use-package evil
   :ensure t
-  :after ibuffer
   :init
   (setq evil-want-abbrev-expand-on-insert-exit nil)
   :config
@@ -128,7 +127,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
 (use-package magit
-  ; TODO: commit signing still does not work
   :ensure t)
 
 (use-package evil-magit

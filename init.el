@@ -34,11 +34,12 @@
 ;;###autoload
 (defun keychain-refresh-environment ()
   "Set ssh-agent and gpg-agent environment variables.
+
 Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 `process-environment` according to keychain"
   (interactive)
-  (let* ((ssh (shell-command-to-string "keychain -q --noask --agent ssh --eval"))
-	 (gpg (shell-command-to-string "keychain -q --noask --agent gpg --eval")))
+  (let* ((ssh (shell-command-to-string "keychain -q --noask --agents ssh --eval"))
+	 (gpg (shell-command-to-string "keychain -q --noask --agents gpg --eval")))
     (list (and ssh
 	       (string-match "SSH_AUTH_SOCK[=\s]\\([^\s;\n]*\\)" ssh)
 	       (setenv "SSH_AUTH_SOCK" (match-string 1 ssh)))
@@ -49,8 +50,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	       (string-match "GPG_AGENT_INFO[=\s]\\([^\s;\n]*\\)" gpg)
 	       (setenv "GPG_AGENT_INFO" (match-string 1 gpg))))))
 
-(setq epa-pinentry-mode 'loopback)
-; This does not seem to load SSH keys
 (keychain-refresh-environment)
 
 
@@ -125,12 +124,11 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	'((read-file-name-internal . ivy--regex-fuzzy)
 	  (t . ivy--regex-plus))
         ; TODO: make swiper faster
-        ;       is swiper equivalent to counsel-grep?
 	counsel-grep-base-command
 	"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
 (use-package magit
-  ; TODO: pushing and commit signing still do not work
+  ; TODO: commit signing still does not work
   :ensure t)
 
 (use-package evil-magit

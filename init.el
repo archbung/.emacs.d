@@ -50,6 +50,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	       (setenv "GPG_AGENT_INFO" (match-string 1 gpg))))))
 
 (setq epa-pinentry-mode 'loopback)
+; This does not seem to load SSH keys
 (keychain-refresh-environment)
 
 
@@ -76,6 +77,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 ;; Essentials
 (use-package pinentry
+  ; This solves the signing issue
   :ensure t)
 
 (use-package evil
@@ -110,7 +112,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
 (use-package magit
-  ; TODO: commit signing still does not work
+  ; TODO: pushing and commit signing do not work
   :ensure t)
 
 (use-package evil-magit
@@ -132,12 +134,29 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :ensure t
   :init
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
-  (add-hook 'undo-tree-visualizer-mode-hook
+  :hook
+  (undo-tree-visualizer-mode .
 	    (lambda ()
 	      (undo-tree-visualizer-selection-mode)
 	      (setq display-line-numbers nil)))
   :config
   (global-undo-tree-mode 1))
+
+
+;; Eye candies
+(use-package doom-themes
+  :ensure t
+  :init
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
+  (load-theme 'doom-one-light t)
+  :config
+  (doom-themes-visual-bell-config)
+  (doom-themes-org-config))
+
+(use-package rainbow-delimiters-mode
+  :ensure rainbow-delimiters
+  :hook prog-mode)
 
 
 ;; Proof General
@@ -152,6 +171,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 ;; Haskell
 (use-package intero
   :ensure t
+  ; for some reason :hook does not work properly here
   :init
   (add-hook 'haskell-mode-hook 'intero-mode))
 

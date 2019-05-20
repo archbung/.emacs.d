@@ -76,15 +76,25 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 
 ;; Essentials
+; TODO: open term in minibuffer or virtual-buffer like ivy (?)
 (use-package pinentry
-  ; This solves the signing issue
+  ; Not sure if this solves the signing issue
   :ensure t)
 
+; TODO: set some modes to insert-mode by default
+;       - haskell-interactive-popup-errors
 (use-package evil
   :ensure t
+  :after ibuffer
   :init
   (setq evil-want-abbrev-expand-on-insert-exit nil)
   :config
+  (evil-set-initial-state 'ibuffer-mode 'normal)
+  (evil-define-key 'normal ibuffer-mode-map
+    (kbd "j") 'evil-next-line
+    (kbd "k") 'evil-previous-line
+    (kbd "J") 'ibuffer-jump-to-buffer
+    (kbd "l") 'ibuffer-visit-buffer)
   (evil-mode 1))
 
 (use-package general
@@ -92,13 +102,19 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :config
   (general-create-definer leader-def :prefix "SPC")
   (leader-def 'normal
-    "f p" 'find-file-in-project
     "f r" 'counsel-recentf
     "f f" 'counsel-find-file
     "g s" 'magit-status
-    "/"   'swiper)
-  (general-create-definer localleader-def :prefix "SPC m"))
+    "/"   'counsel-grep-or-swiper
+    "b b" 'counsel-ibuffer
+    "p f" 'find-file-in-project
+    "p v" 'ffip-split-window-horizontally
+    "p s" 'ffip-split-window-vertically)
+  (general-create-definer localleader-def :prefix "SPC m")
+  (localleader-def 'normal
+    "j d" 'intero-goto-definition))
 
+; TODO: redefine counsel-fzf to use fd instead (?)
 (use-package counsel
   :ensure t
   :config
@@ -108,11 +124,13 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	ivy-re-builders-alist
 	'((read-file-name-internal . ivy--regex-fuzzy)
 	  (t . ivy--regex-plus))
+        ; TODO: make swiper faster
+        ;       is swiper equivalent to counsel-grep?
 	counsel-grep-base-command
 	"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
 (use-package magit
-  ; TODO: pushing and commit signing do not work
+  ; TODO: pushing and commit signing still do not work
   :ensure t)
 
 (use-package evil-magit
@@ -128,6 +146,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 (use-package ace-window
   :ensure t
   ; TODO: learn how this package works
+  ; TODO: perhaps use a better keymap
   :bind ("M-o" . ace-window))
 
 (use-package undo-tree

@@ -75,9 +75,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 
 ;; Essentials
-(use-package pinentry
-  :ensure t)
-
 (use-package auto-package-update
   :ensure t
   :config

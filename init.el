@@ -75,10 +75,15 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 
 ;; Essentials
-; TODO: open term in minibuffer or virtual-buffer like ivy (?)
 (use-package pinentry
-  ; Not sure if this solves the signing issue
   :ensure t)
+
+(use-package auto-package-update
+  :ensure t
+  :config
+  (setq auto-package-update-delete-old-version t
+        auto-package-update-interval 3)
+  (auto-package-update-maybe))
 
 ; TODO: set some modes to insert-mode by default
 ;       - haskell-interactive-popup-errors
@@ -176,7 +181,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 ;; Proof General
 (use-package proof-general
-  :ensure t)
+  :ensure t
+  :init
+  (add-hook 'coq-mode-hook #'company-coq-mode))
 
 ;; Ledger
 (use-package ledger-mode
@@ -205,8 +212,23 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 ;; Z3
 (use-package z3-mode
+  :ensure t
+  :mode "\\.z3\\'")
+
+
+;; LaTeX
+(use-package tex
+  :ensure auctex
+  :config
+  (setq TeX-command-default "LatexMk"
+        font-latex-fontify-script nil
+        font-latex-fontify-sectioning 'color))
+
+(use-package auctex-latexmk
+  :ensure t
   :init
-  :ensure t)
+  (with-eval-after-load 'tex
+    (auctex-latexmk-setup)))
 
 
 (provide 'init)

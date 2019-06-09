@@ -167,7 +167,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :init
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (load-theme 'doom-one-light t)
+  (load-theme 'doom-spacegrey t)
   :config
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
@@ -178,10 +178,16 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 
 ;; Proof General
-(use-package proof-general
+(use-package company-coq
   :ensure t
   :init
-  (add-hook 'coq-mode-hook #'company-coq-mode))
+  (add-hook 'coq-mode-hook #'company-coq-mode)
+  :config
+  (setq company-coq-disabled-features '(smart-subscripts prettify-symbols title-comments)))
+
+(use-package proof-general
+  :ensure t)
+
 
 ;; HLedger
 (use-package hledger-mode

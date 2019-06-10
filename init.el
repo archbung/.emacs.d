@@ -24,6 +24,8 @@
 (setq-default indent-tabs-mode nil)
 (setq custom-file "~/.emacs.d/custom.el"
       inhibit-startup-screen t
+      ; This speeds up the modeline
+      inhibit-compacting-font-caches t
       make-backup-files nil
       require-final-newline t
       ring-bell-function 'ignore
@@ -176,14 +178,20 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :ensure rainbow-delimiters
   :hook prog-mode)
 
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+
+(use-package all-the-icons)
+
 
 ;; Proof General
-(use-package company-coq
-  :ensure t
+(use-package company-coq-mode
+  :ensure company-coq
+  :hook coq-mode
   :init
-  (add-hook 'coq-mode-hook #'company-coq-mode)
-  :config
-  (setq company-coq-disabled-features '(smart-subscripts prettify-symbols title-comments)))
+  (setq company-coq-disabled-features
+        '(smart-subscripts prettify-symbols title-comments)))
 
 (use-package proof-general
   :ensure t)
@@ -225,14 +233,12 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 
 ;; Haskell
-(use-package intero
-  :ensure t
-  ; for some reason :hook does not work properly here
-  :init
-  (add-hook 'haskell-mode-hook 'intero-mode))
+(use-package intero-mode
+  :ensure intero
+  :hook haskell-mode)
 
-(use-package hindent
-  :ensure t
+(use-package hindent-mode
+  :ensure hindent
   :hook haskell-mode)
 
 

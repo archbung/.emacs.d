@@ -84,8 +84,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
         auto-package-update-interval 3)
   (auto-package-update-maybe))
 
-; TODO: set some modes to insert-mode by default
-;       - haskell-interactive-popup-errors
 (use-package evil
   :ensure t
   :init
@@ -115,7 +113,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (general-create-definer localleader-def :prefix "SPC m")
   (localleader-def 'normal
     "j d" 'intero-goto-definition
-    "b"   'hledger/popup-balance-at-point))
+    "b p" 'ledger-display-balance-at-point))
 
 ; TODO: redefine counsel-fzf to use fd instead (?)
 (use-package counsel
@@ -143,6 +141,11 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :ensure t
   :config
   (setq ffip-use-rust-fd t))
+
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
 
 (use-package ace-window
   :ensure t
@@ -197,39 +200,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :ensure t)
 
 
-;; HLedger
-(use-package hledger-mode
-  :ensure t
-  :mode ("\\.ledger\\'" "\\.hledger\\'")
-  :preface
-  (defun hledger/next-entry ()
-    "Move to the next entry."
-    (interactive)
-    (hledger-next-or-new-entry)
-    (hledger-pulse-momentary-current-entry))
-
-  (defun hledger/prev-entry ()
-    "Move to the previous entry."
-    (interactive)
-    (hledger-backward-entry)
-    (hledger-pulse-momentary-current-entry))
-  :init
-  (setq hledger-jfile (expand-file-name "~/org/finance.ledger")
-        hledger-show-expanded-report nil))
-
-(use-package hledger-input
-  :ensure hledger-mode
-  :preface
-  (defun hledger/popup-balance-at-point ()
-    "Show balance for account at point in a popup."
-    (interactive)
-    (if-let ((account (thing-at-point 'hledger-account)))
-        (message (hledger-shell-command-to-string (format "balance -N %s" account)))
-      (message "No account at point")))
-  :config
-  (setq hledger-input-buffer-height 20)
-  (add-hook 'hledger-input-post-commit-hook #'hledger-show-new-balances)
-  (add-hook 'hledger-input-mode-hook #'auto-fill-mode))
+;; Accounting
+(use-package ledger-mode
+  :ensure t)
 
 
 ;; Haskell
@@ -255,7 +228,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :mode "\\.z3\\'")
 
 
-;; LaTeX
+;; Documents processing
 (use-package tex
   :ensure auctex
   :config
@@ -268,6 +241,15 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :init
   (with-eval-after-load 'tex
     (auctex-latexmk-setup)))
+
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init
+  (setq markdown-command "markdown"))
 
 
 (provide 'init)

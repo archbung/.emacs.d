@@ -106,6 +106,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "f f" 'counsel-find-file
     "g s" 'magit-status
     "/"   'counsel-grep-or-swiper
+    "r"   'counsel-rg
     "b b" 'counsel-ibuffer
     "p f" 'find-file-in-project
     "p v" 'ffip-split-window-horizontally
@@ -113,6 +114,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (general-create-definer localleader-def :prefix "SPC m")
   (localleader-def 'normal
     "j d" 'intero-goto-definition
+    "c c" 'TeX-command-master
     "b p" 'ledger-display-balance-at-point))
 
 ; TODO: redefine counsel-fzf to use fd instead (?)
@@ -234,7 +236,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :config
   (setq TeX-command-default "LatexMk"
         font-latex-fontify-script nil
-        font-latex-fontify-sectioning 'color))
+        font-latex-fontify-sectioning 'color)
+  (add-to-list 'TeX-view-program-selection
+               '(output-pdf "Zathura")))
 
 (use-package auctex-latexmk
   :ensure t

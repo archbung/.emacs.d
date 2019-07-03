@@ -103,18 +103,24 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :config
   (general-create-definer leader-def :prefix "SPC")
   (leader-def 'normal
+    "/ g" 'counsel-grep-or-swiper
+    "/ /" 'swiper-isearch
+    "b b" 'counsel-ibuffer
     "f r" 'counsel-recentf
     "f f" 'counsel-find-file
     "g s" 'magit-status
-    "/"   'counsel-grep-or-swiper
-    "r"   'counsel-rg
-    "b b" 'counsel-ibuffer
+    "h f" 'counsel-describe-function
+    "h v" 'counsel-describe-variable
+    "j c" 'avy-goto-char
+    "j l" 'avy-goto-line
     "o l" 'org-store-link
     "o a" 'org-agenda
     "o c" 'org-capture
     "p f" 'find-file-in-project
     "p v" 'ffip-split-window-horizontally
-    "p s" 'ffip-split-window-vertically)
+    "p s" 'ffip-split-window-vertically
+    "r"   'counsel-rg
+    "v u" 'undo-tree-visualize)
   (general-create-definer localleader-def :prefix "SPC m")
   (localleader-def 'normal
     "j d" 'intero-goto-definition
@@ -168,6 +174,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :ensure t
   :config
   (evil-define-key evil-magit-state magit-mode-map "?" 'evil-search-backward))
+
+(use-package avy
+  :ensure t)
 
 (use-package find-file-in-project
   :ensure t

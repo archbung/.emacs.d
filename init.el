@@ -97,6 +97,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     (kbd "l") 'ibuffer-visit-buffer)
   (evil-mode 1))
 
+; Keybindings 2.0: electric boogaloo
 (use-package general
   :ensure t
   :config
@@ -108,16 +109,45 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "/"   'counsel-grep-or-swiper
     "r"   'counsel-rg
     "b b" 'counsel-ibuffer
+    "o l" 'org-store-link
+    "o a" 'org-agenda
+    "o c" 'org-capture
     "p f" 'find-file-in-project
     "p v" 'ffip-split-window-horizontally
     "p s" 'ffip-split-window-vertically)
   (general-create-definer localleader-def :prefix "SPC m")
   (localleader-def 'normal
     "j d" 'intero-goto-definition
+
+    ;; Org-related
+    ; Time-related keybindings
+    "t ." 'org-time-stamp
+    "t !" 'org-time-stamp-inactive
+    "t d" 'org-deadline
+    "t s" 'org-schedule
+    "t e" 'org-clock-modify-effort-estimate
+
+    ; View-related keybindings
+    "/"   'org-sparse-tree
+
     "c c" 'TeX-command-master
     "b p" 'ledger-display-balance-at-point))
 
-; TODO: redefine counsel-fzf to use fd instead (?)
+(use-package org
+  :ensure t
+  :config
+  (add-to-list 'org-modules 'org-habit)
+  (setq org-enforce-todo-dependencies t
+        org-directory "~/org"
+        org-capture-templates
+        '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
+           "* TODO %?\n %i\n %a")
+          ("j" "Journal" entry (file+datetree "~/org/journal.org")
+           "* %?\nEntered on %U\n %i\n %a"))
+        org-todo-keywords
+        '((sequence "TODO(t)" "VERIFY(v@/!)" "|" "DONE(d!)" "CANCELED(c@)"))
+        org-log-into-drawer t))
+
 (use-package counsel
   :ensure t
   :config

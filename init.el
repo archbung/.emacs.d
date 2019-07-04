@@ -126,15 +126,20 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "j d" 'intero-goto-definition
 
     ;; Org-related
-    ; Time-related keybindings
+    ; Time-related
     "t ." 'org-time-stamp
     "t !" 'org-time-stamp-inactive
     "t d" 'org-deadline
     "t s" 'org-schedule
     "t e" 'org-clock-modify-effort-estimate
 
-    ; View-related keybindings
+    ; View-related
     "/"   'org-sparse-tree
+
+    ; Properties-related
+    "p t" 'org-set-tags-command
+    "p s" 'org-set-property
+    "p d" 'org-delete-property
 
     "c c" 'TeX-command-master
     "b p" 'ledger-display-balance-at-point))
@@ -143,16 +148,17 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :ensure t
   :config
   (add-to-list 'org-modules 'org-habit)
+  (add-to-list 'org-agenda-files "~/org")
   (setq org-enforce-todo-dependencies t
-        org-directory "~/org"
+        org-todo-keywords
+        '((sequence "TODO(t)" "VERIFY(v@/!)" "|" "DONE(d!)" "CANCELED(c@)"))
         org-capture-templates
         '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
            "* TODO %?\n %i\n %a")
           ("j" "Journal" entry (file+datetree "~/org/journal.org")
            "* %?\nEntered on %U\n %i\n %a"))
-        org-todo-keywords
-        '((sequence "TODO(t)" "VERIFY(v@/!)" "|" "DONE(d!)" "CANCELED(c@)"))
-        org-log-into-drawer t))
+        org-log-into-drawer t
+        ))
 
 (use-package counsel
   :ensure t

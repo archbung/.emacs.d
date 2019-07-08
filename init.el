@@ -132,9 +132,15 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "t d" 'org-deadline
     "t s" 'org-schedule
     "t e" 'org-clock-modify-effort-estimate
+    "t i" 'org-clock-in
+    "t o" 'org-clock-out
 
     ; View-related
     "/"   'org-sparse-tree
+
+    ; Refile and copy
+    "r r" 'org-refile
+    "r c" 'org-copy
 
     ; Properties-related
     "p t" 'org-set-tags-command
@@ -144,8 +150,14 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "c c" 'TeX-command-master
     "b p" 'ledger-display-balance-at-point))
 
+(defun org-summary-todo (n-done n-not-done)
+  "Switch entry to DONE when all subentries are DONE, to TODO otherwise."
+  (let (org-log-done org-log-states)
+    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+
 (use-package org
   :ensure t
+  :hook (org-after-todo-statistics . org-summary-todo)
   :config
   (add-to-list 'org-modules 'org-habit)
   (add-to-list 'org-agenda-files "~/org")
@@ -153,7 +165,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
         org-todo-keywords
         '((sequence "TODO(t)" "VERIFY(v@/!)" "|" "DONE(d!)" "CANCELED(c@)"))
         org-capture-templates
-        '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
+        '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Inbox")
            "* TODO %?\n %i\n %a")
           ("j" "Journal" entry (file+datetree "~/org/journal.org")
            "* %?\nEntered on %U\n %i\n %a"))

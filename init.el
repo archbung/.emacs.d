@@ -311,6 +311,10 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :init
   (setq markdown-command "markdown"))
 
+(use-package spthy-mode
+  :straight (spthy-mode :host github :repo "tamarin-prover/editors")
+  :mode "\\.spthy\\'")
+
 
 (provide 'init)
 ;;; init.el ends here

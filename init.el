@@ -77,6 +77,18 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 
 ;; Essentials
+(use-package use-package-ensure-system-package
+  :ensure t
+  :config
+  (setq system-packages-use-sudo t
+        system-packages-package-manager 'pacman))
+
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+
 (use-package auto-package-update
   :ensure t
   :config
@@ -111,6 +123,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (leader-def 'normal
     "/ g" 'counsel-grep-or-swiper
     "/ /" 'swiper-isearch
+    "/ r" 'counsel-rg
     "b b" 'counsel-ibuffer
     "f r" 'counsel-recentf
     "f f" 'counsel-find-file
@@ -125,7 +138,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "p f" 'find-file-in-project
     "p v" 'ffip-split-window-horizontally
     "p s" 'ffip-split-window-vertically
-    "r"   'counsel-rg
     "v u" 'undo-tree-visualize)
   (general-create-definer localleader-def :prefix "SPC m")
   (localleader-def 'normal
@@ -185,6 +197,10 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
         org-archive-location "~/org/archive.org::* From %s"
         ))
 
+(use-package rg
+  :ensure-system-package
+  (rg . ripgrep))
+
 (use-package counsel
   :ensure t
   :config
@@ -208,6 +224,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 (use-package avy
   :ensure t)
+
+(use-package fd
+  :ensure-system-package fd)
 
 (use-package find-file-in-project
   :ensure t

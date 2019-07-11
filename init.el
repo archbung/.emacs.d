@@ -55,49 +55,42 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 (keychain-refresh-environment)
 
 
+;; Straight
+(setq straight-use-package-by-default t)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
 ;; Use-package
-(require 'package)
-(setq package-archives
-      '(("elpa". "https://elpa.gnu.org/packages/")
-	("org" . "https://orgmode.org/elpa/")
-	("melpa" . "https://melpa.org/packages/")
-	("melpa-stable" . "https://stable.melpa.org/packages/"))
-      package-archive-priorities
-      '(("melpa-stable" . 20)
-	("elpa" . 50)
-	("org" . 20)
-	("melpa" . 100)))
-
-(package-initialize)
-(when (not package-archive-contents)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(require 'use-package)
-
+(straight-use-package 'use-package)
 
 ;; Essentials
 (use-package use-package-ensure-system-package
-  :ensure t
   :config
   (setq system-packages-use-sudo t
         system-packages-package-manager 'pacman))
 
 (use-package exec-path-from-shell
-  :ensure t
   :config
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
 (use-package auto-package-update
-  :ensure t
   :config
   (setq auto-package-update-delete-old-version t
         auto-package-update-interval 3)
   (auto-package-update-maybe))
 
 (use-package evil
-  :ensure t
   :init
   (setq evil-want-abbrev-expand-on-insert-exit nil)
   :config
@@ -110,14 +103,12 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (evil-mode 1))
 
 (use-package evil-surround
-  :ensure t
   :hook (org-mode . (lambda () (push '(?m . ("\\( " . " \\)")) evil-surround-pairs-alist)))
   :config
   (global-evil-surround-mode 1))
 
 ; Keybindings 2.0: electric boogaloo
 (use-package general
-  :ensure t
   :config
   (general-create-definer leader-def :prefix "SPC")
   (leader-def 'normal
@@ -179,7 +170,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
 
 (use-package org
-  :ensure t
   :hook (org-after-todo-statistics . org-summary-todo)
   :config
   (add-to-list 'org-modules 'org-habit)
@@ -197,12 +187,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
         org-archive-location "~/org/archive.org::* From %s"
         ))
 
-(use-package rg
-  :ensure-system-package
-  (rg . ripgrep))
-
 (use-package counsel
-  :ensure t
   :config
   (ivy-mode 1)
   (setq ivy-use-virtual-buffer t
@@ -214,38 +199,28 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	counsel-grep-base-command
 	"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
-(use-package magit
-  :ensure t)
+(use-package magit)
 
 (use-package evil-magit
-  :ensure t
   :config
   (evil-define-key evil-magit-state magit-mode-map "?" 'evil-search-backward))
 
-(use-package avy
-  :ensure t)
-
-(use-package fd
-  :ensure-system-package fd)
+(use-package avy)
 
 (use-package find-file-in-project
-  :ensure t
   :config
   (setq ffip-use-rust-fd t))
 
 (use-package which-key
-  :ensure t
   :config
   (which-key-mode))
 
 (use-package ace-window
-  :ensure t
   ; TODO: learn how this package works
   ; TODO: perhaps use a better keymap
   :bind ("M-o" . ace-window))
 
 (use-package undo-tree
-  :ensure t
   :init
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
   :hook
@@ -259,7 +234,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 ;; Eye candies
 (use-package doom-themes
-  :ensure t
   :init
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
@@ -269,11 +243,10 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (doom-themes-org-config))
 
 (use-package rainbow-delimiters-mode
-  :ensure rainbow-delimiters
+  :straight rainbow-delimiters
   :hook prog-mode)
 
 (use-package doom-modeline
-  :ensure t
   :hook (after-init . doom-modeline-mode))
 
 (use-package all-the-icons)
@@ -281,47 +254,43 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 ;; Proof General
 (use-package company-coq-mode
-  :ensure company-coq
+  :straight company-coq
   :hook coq-mode
   :init
   (setq company-coq-disabled-features
         '(smart-subscripts prettify-symbols title-comments)))
 
-(use-package proof-general
-  :ensure t)
+(use-package proof-general)
 
 
 ;; Accounting
-(use-package ledger-mode
-  :ensure t)
+(use-package ledger-mode)
 
 
 ;; Haskell
 (use-package intero-mode
-  :ensure intero
+  :straight intero
   :hook haskell-mode)
 
 (use-package hindent-mode
-  :ensure hindent
+  :straight hindent
   :hook haskell-mode)
 
 
 ;; Rust
 (use-package rust-mode
-  :ensure t
   :config
   (setq rust-format-on-save t))
 
 
 ;; Z3
 (use-package z3-mode
-  :ensure t
   :mode "\\.z3\\'")
 
 
 ;; Documents processing
 (use-package tex
-  :ensure auctex
+  :straight auctex
   :config
   (setq TeX-command-default "LatexMk"
         font-latex-fontify-script nil
@@ -330,13 +299,11 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
                '(output-pdf "Zathura")))
 
 (use-package auctex-latexmk
-  :ensure t
   :init
   (with-eval-after-load 'tex
     (auctex-latexmk-setup)))
 
 (use-package markdown-mode
-  :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)

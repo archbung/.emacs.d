@@ -100,6 +100,24 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     (kbd "k") 'evil-previous-line
     (kbd "J") 'ibuffer-jump-to-buffer
     (kbd "l") 'ibuffer-visit-buffer)
+  (evil-set-initial-state 'org-agenda-mode 'motion)
+  (evil-define-key 'motion org-agenda-map
+    (kbd "<tab>") 'org-agenda-goto
+    (kbd "<return>") 'org-agenda-switch-to
+    (kbd "M-<return>") 'org-agenda-recenter
+    (kbd "j") 'org-agenda-next-line
+    (kbd "k") 'org-agenda-previous-line
+    (kbd "gj") 'org-agenda-next-item
+    (kbd "gk") 'org-agenda-previous-item
+    (kbd "[") 'org-agenda-earlier
+    (kbd "]") 'org-agenda-later
+    (kbd "J") 'org-agenda-priority-down
+    (kbd "K") 'org-agenda-priority-up
+    (kbd "H") 'org-agenda-do-date-earlier
+    (kbd "L") 'org-agenda-do-date-later
+    (kbd "t") 'org-agenda-todo
+    (kbd "u") 'org-agenda-undo
+    )
   (evil-mode 1))
 
 (use-package evil-surround
@@ -121,6 +139,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "g s" 'magit-status
     "h f" 'counsel-describe-function
     "h v" 'counsel-describe-variable
+    "h m" 'describe-mode
     "j c" 'avy-goto-char
     "j l" 'avy-goto-line
     "o l" 'org-store-link

@@ -97,6 +97,12 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     (kbd "l") 'ibuffer-visit-buffer)
   (evil-mode 1))
 
+(use-package evil-surround
+  :ensure t
+  :hook (org-mode . (lambda () (push '(?m . ("\\( " . " \\)")) evil-surround-pairs-alist)))
+  :config
+  (global-evil-surround-mode 1))
+
 ; Keybindings 2.0: electric boogaloo
 (use-package general
   :ensure t
@@ -126,6 +132,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "j d" 'intero-goto-definition
 
     ;; Org-related
+    "a a" 'org-archive-subtree-default
+    "a t" 'org-toggle-archive-tag
+
     ; Time-related
     "t ." 'org-time-stamp
     "t !" 'org-time-stamp-inactive
@@ -137,10 +146,12 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
     ; View-related
     "/"   'org-sparse-tree
+    "v c" 'org-columns
 
     ; Refile and copy
     "r r" 'org-refile
-    "r c" 'org-copy
+    "r y" 'org-copy
+    "r y" 'avy-org-refile-as-child
 
     ; Properties-related
     "p t" 'org-set-tags-command
@@ -162,6 +173,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (add-to-list 'org-modules 'org-habit)
   (add-to-list 'org-agenda-files "~/org")
   (setq org-enforce-todo-dependencies t
+        org-refile-use-outline-path t
         org-todo-keywords
         '((sequence "TODO(t)" "VERIFY(v@/!)" "|" "DONE(d!)" "CANCELED(c@)"))
         org-capture-templates
@@ -170,6 +182,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
           ("j" "Journal" entry (file+datetree "~/org/journal.org")
            "* %?\nEntered on %U\n %i\n %a"))
         org-log-into-drawer t
+        org-archive-location "~/org/archive.org::* From %s"
         ))
 
 (use-package counsel

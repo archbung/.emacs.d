@@ -191,6 +191,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 (use-package org
   :hook (org-after-todo-statistics . org-summary-todo)
   :config
+  (add-to-list 'org-export-backends 'ox-md)
   (add-to-list 'org-modules 'org-habit)
   (add-to-list 'org-agenda-files "~/org")
   (setq org-enforce-todo-dependencies t

@@ -193,6 +193,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :config
   (add-to-list 'org-export-backends 'ox-md)
   (add-to-list 'org-modules 'org-habit)
+  (add-to-list 'org-modules 'org-timer)
   (add-to-list 'org-agenda-files "~/org")
   (setq org-enforce-todo-dependencies t
         org-refile-use-outline-path t
@@ -257,7 +258,8 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :init
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (load-theme 'doom-spacegrey t)
+  (let ((current-hour (string-to-number (format-time-string "%H"))))
+    (if (or (< current-hour 6) (> current-hour 20)) (load-theme 'doom-one t) (load-theme 'doom-one-light t)))
   :config
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))

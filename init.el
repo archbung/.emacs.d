@@ -84,12 +84,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
-(use-package auto-package-update
-  :config
-  (setq auto-package-update-delete-old-version t
-        auto-package-update-interval 3)
-  (auto-package-update-maybe))
-
 (use-package evil
   :init
   (setq evil-want-abbrev-expand-on-insert-exit nil)
@@ -206,7 +200,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
            "* %?\nEntered on %U\n %i\n %a"))
         org-log-into-drawer t
         org-archive-location "~/org/archive.org::* From %s"
-        ))
+        org-clock-persist 'history
+        )
+  (org-clock-persistence-insinuate))
 
 (use-package counsel
   :config

@@ -134,6 +134,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "h f" 'counsel-describe-function
     "h v" 'counsel-describe-variable
     "h m" 'describe-mode
+    "h i" 'info
     "j c" 'avy-goto-char
     "j l" 'avy-goto-line
     "o l" 'org-store-link
@@ -175,6 +176,8 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "p d" 'org-delete-property
 
     "c c" 'TeX-command-master
+
+    "a"   'ledger-add-transaction
     "b p" 'ledger-display-balance-at-point))
 
 (defun org-summary-todo (n-done n-not-done)
@@ -282,7 +285,13 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 
 ;; Accounting
-(use-package ledger-mode)
+(use-package ledger-mode
+  :config
+  (add-hook 'ledger-mode-hook
+            (lambda ()
+              (setq-local tab-always-indent 'complete)
+              (setq-local completion-cycle-threshold t)
+              (setq-local ledger-complete-in-steps t))))
 
 
 ;; Haskell

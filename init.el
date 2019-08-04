@@ -160,6 +160,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "t e" 'org-clock-modify-effort-estimate
     "t i" 'org-clock-in
     "t o" 'org-clock-out
+    "t t" 'org-timer
 
     ; View-related
     "/"   'org-sparse-tree
@@ -193,14 +194,18 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (add-to-list 'org-modules 'org-timer)
   (add-to-list 'org-agenda-files "~/org")
   (setq org-enforce-todo-dependencies t
-        org-refile-use-outline-path t
         org-todo-keywords
         '((sequence "TODO(t)" "VERIFY(v@/!)" "|" "DONE(d!)" "CANCELED(c@)"))
         org-capture-templates
-        '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Inbox")
+        '(("t" "Todo" entry (file+headline "~/org/inbox.org" "Inbox")
            "* TODO %?\n %i\n %a")
+          ("T" "Tickler" entry (file+headline "~/org/tickler.org" "Tickler")
+           "* %i%? \n %U")
           ("j" "Journal" entry (file+datetree "~/org/journal.org")
            "* %?\nEntered on %U\n %i\n %a"))
+        org-refile-targets '(("~/org/gtd.org" :maxlevel . 3)
+                             ("~/org/someday.org" :maxlevel . 1)
+                             ("~/org/tickler.org" :maxlevel . 2))
         org-log-into-drawer t
         org-archive-location "~/org/archive.org::* From %s"
         org-clock-persist 'history

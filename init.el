@@ -347,6 +347,8 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :straight (spthy-mode :host github :repo "tamarin-prover/editors")
   :mode "\\.spthy\\'")
 
+(use-package pkgbuild-mode)
+
 
 (provide 'init)
 ;;; init.el ends here

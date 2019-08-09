@@ -257,6 +257,14 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (global-undo-tree-mode 1))
 
 
+;; Snippets
+(use-package yasnippet
+  :config
+  (yas-global-mode 1))
+
+(use-package yasnippet-snippets)
+
+
 ;; Eye candies
 (use-package doom-themes
   :init

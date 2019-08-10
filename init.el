@@ -178,7 +178,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
     "c c" 'TeX-command-master
 
-    "a"   'ledger-add-transaction
     "b p" 'ledger-display-balance-at-point))
 
 (defun org-summary-todo (n-done n-not-done)
@@ -190,9 +189,8 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :hook (org-after-todo-statistics . org-summary-todo)
   :config
   (add-to-list 'org-export-backends 'ox-md)
-  (add-to-list 'org-modules 'org-habit)
-  (add-to-list 'org-modules 'org-timer)
-  (add-to-list 'org-agenda-files "~/org")
+  (mapc (lambda (arg) (add-to-list 'org-modules arg)) '(org-habit 'org-timer))
+  (mapc (lambda (arg) (add-to-list 'org-agenda-files arg)) '("~/org/gtd.org" "~/org/tickler.org"))
   (setq org-enforce-todo-dependencies t
         org-todo-keywords
         '((sequence "TODO(t)" "VERIFY(v@/!)" "|" "DONE(d!)" "CANCELED(c@)"))

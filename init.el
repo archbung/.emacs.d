@@ -95,22 +95,22 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     (kbd "J") 'ibuffer-jump-to-buffer
     (kbd "l") 'ibuffer-visit-buffer)
   (evil-set-initial-state 'org-agenda-mode 'motion)
-  (evil-define-key 'motion org-agenda-map
+  (evil-define-key 'motion org-agenda-mode-map
     (kbd "<tab>") 'org-agenda-goto
     (kbd "<return>") 'org-agenda-switch-to
     (kbd "M-<return>") 'org-agenda-recenter
-    (kbd "j") 'org-agenda-next-line
-    (kbd "k") 'org-agenda-previous-line
-    (kbd "gj") 'org-agenda-next-item
-    (kbd "gk") 'org-agenda-previous-item
-    (kbd "[") 'org-agenda-earlier
-    (kbd "]") 'org-agenda-later
-    (kbd "J") 'org-agenda-priority-down
-    (kbd "K") 'org-agenda-priority-up
-    (kbd "H") 'org-agenda-do-date-earlier
-    (kbd "L") 'org-agenda-do-date-later
+    "j" 'org-agenda-next-line
+    "k" 'org-agenda-previous-line
     (kbd "t") 'org-agenda-todo
     (kbd "u") 'org-agenda-undo
+    "gj" 'org-agenda-next-item
+    "gk" 'org-agenda-previous-item
+    (kbd "[") 'org-agenda-earlier
+    (kbd "]") 'org-agenda-later
+    "J" 'org-agenda-priority-down
+    "K" 'org-agenda-priority-up
+    "H" 'org-agenda-do-date-earlier
+    "L" 'org-agenda-do-date-later
     )
   (evil-define-key 'normal org-mode-map
     (kbd "<return>") 'org-open-at-point)
@@ -192,7 +192,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :config
   (add-to-list 'org-export-backends 'ox-md)
   (mapc (lambda (arg) (add-to-list 'org-modules arg)) '(org-habit 'org-timer))
-  (mapc (lambda (arg) (add-to-list 'org-agenda-files arg)) '("~/org/gtd.org" "~/org/tickler.org"))
+  (add-to-list 'org-agenda-files "~/org")
   (setq org-enforce-todo-dependencies t
         org-return-follows-link t
         org-todo-keywords

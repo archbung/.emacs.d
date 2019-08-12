@@ -112,6 +112,8 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     (kbd "t") 'org-agenda-todo
     (kbd "u") 'org-agenda-undo
     )
+  (evil-define-key 'normal org-mode-map
+    (kbd "<return>") 'org-open-at-point)
   (evil-mode 1))
 
 (use-package evil-surround
@@ -192,6 +194,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (mapc (lambda (arg) (add-to-list 'org-modules arg)) '(org-habit 'org-timer))
   (mapc (lambda (arg) (add-to-list 'org-agenda-files arg)) '("~/org/gtd.org" "~/org/tickler.org"))
   (setq org-enforce-todo-dependencies t
+        org-return-follows-link t
         org-todo-keywords
         '((sequence "TODO(t)" "VERIFY(v@/!)" "|" "DONE(d!)" "CANCELED(c@)"))
         org-capture-templates

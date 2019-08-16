@@ -162,7 +162,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     "t e" 'org-clock-modify-effort-estimate
     "t i" 'org-clock-in
     "t o" 'org-clock-out
-    "t t" 'org-timer
+    "t t" 'org-timer-set-timer
+    "t p" 'org-timer-pause-or-continue
+    "t T" 'org-timer-stop
 
     ; View-related
     "/"   'org-sparse-tree

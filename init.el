@@ -169,6 +169,8 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     ; View-related
     "/"   'org-sparse-tree
     "v c" 'org-columns
+    "v h" 'outline-hide-entry
+    "v s" 'outline-show-entry
 
     ; Refile and copy
     "r r" 'org-refile
@@ -335,6 +337,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 (use-package tex
   :straight auctex
   :config
+  (add-hook 'LaTeX-mode-hook #'outline-minor-mode)
   (setq TeX-command-default "LatexMk"
         font-latex-fontify-script nil
         font-latex-fontify-sectioning 'color)

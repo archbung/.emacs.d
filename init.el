@@ -14,6 +14,10 @@
 (when (fboundp 'scroll-bar-mode)
   (scroll-bar-mode -1))
 
+;; set browser
+(setq browse-url-generic-program (executable-find (getenv "BROWSER"))
+      browse-url-browser-function 'browse-url-generic)
+
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 

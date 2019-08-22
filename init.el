@@ -329,7 +329,10 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 ;; Rust
 (use-package rust-mode
   :config
+  (add-hook 'rust-mode-hook 'cargo-minor-mode)
   (setq rust-format-on-save t))
+
+(use-package cargo)
 
 
 ;; Z3

@@ -25,7 +25,10 @@
 (setq-default save-place t)
 
 (show-paren-mode 1)
-(setq-default indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil
+              display-line-numbers 'visual
+              display-line-numbers-widen t)
+
 (setq custom-file "~/.emacs.d/custom.el"
       inhibit-startup-screen t
       ; This speeds up the modeline
@@ -118,6 +121,16 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     )
   (evil-define-key 'normal org-mode-map
     (kbd "<return>") 'org-open-at-point)
+
+  (defun noct:relative ()
+    (setq-local display-line-numbers 'visual))
+
+  (defun noct:absolute ()
+    (setq-local display-line-numbers t))
+
+  (add-hook 'evil-insert-state-entry-hook #'noct:absolute)
+  (add-hook 'evil-insert-state-exit-hook #'noct:relative)
+
   (evil-mode 1))
 
 (use-package evil-surround

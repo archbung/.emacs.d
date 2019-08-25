@@ -5,6 +5,7 @@
 
 (set-frame-font "Hack 10" nil t)
 
+;; Cleaner UI
 (unless (eq window-system 'ns)
   (menu-bar-mode -1))
 (when (fboundp 'tool-bar-mode)
@@ -14,32 +15,56 @@
 (when (fboundp 'scroll-bar-mode)
   (scroll-bar-mode -1))
 
-;; set browser
+(setq inhibit-startup-screen t
+      ring-bell-function 'ignore
+      inhibit-compacting-font-caches t)
+
+
+;; Set default browser
 (setq browse-url-generic-program (executable-find (getenv "BROWSER"))
       browse-url-browser-function 'browse-url-generic)
+
 
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
+
 (require 'saveplace)
 (setq-default save-place t)
+(setq save-place-file (concat user-emacs-directory "places"))
 
+
+;; Handle backup, temporary, and changed files
+(setq make-backup-files nil
+      backup-directory-alist `((".*" . ,temporary-file-directory))
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+
+(setq load-prefer-newer t
+      auto-save-default t)
+
+
+;; Show matching parentheses
 (show-paren-mode 1)
-(setq-default indent-tabs-mode nil
-              display-line-numbers 'visual
-              display-line-numbers-widen t)
 
-(setq custom-file "~/.emacs.d/custom.el"
-      inhibit-startup-screen t
-      ; This speeds up the modeline
-      inhibit-compacting-font-caches t
-      make-backup-files nil
-      require-final-newline t
-      ring-bell-function 'ignore
-      load-prefer-newer t
-      save-place-file (concat user-emacs-directory "places")
-      auto-save-default nil)
 
+;; Use spaces
+(setq-default indent-tabs-mode nil)
+
+
+;; Line numbers
+(setq-default display-line-numbers 'visual)
+
+
+;; Handle trailing whitespaces
+(setq-default show-trailing-whitespace t)
+(add-hook 'after-save-hook #'delete-trailing-whitespace)
+
+
+;; Custom file
+(setq custom-file "~/.emacs.d/custom.el")
+
+
+;; Handle credentials
 ;;###autoload
 (defun keychain-refresh-environment ()
   "Set ssh-agent and gpg-agent environment variables.
@@ -62,7 +87,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 (keychain-refresh-environment)
 
 
-;; Straight
+;; Bootstrap straight.el
 (setq straight-use-package-by-default t)
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -77,9 +102,10 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; Use-package
 (straight-use-package 'use-package)
 
+
+;; PACKAGES
 ;; Essentials
 (use-package use-package-ensure-system-package
   :config
@@ -122,14 +148,14 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (evil-define-key 'normal org-mode-map
     (kbd "<return>") 'org-open-at-point)
 
-  (defun noct:relative ()
+  (defun linum:relative ()
     (setq-local display-line-numbers 'visual))
 
-  (defun noct:absolute ()
+  (defun linum:absolute ()
     (setq-local display-line-numbers t))
 
-  (add-hook 'evil-insert-state-entry-hook #'noct:absolute)
-  (add-hook 'evil-insert-state-exit-hook #'noct:relative)
+  (add-hook 'evil-insert-state-entry-hook #'linum:absolute)
+  (add-hook 'evil-insert-state-exit-hook #'linum:relative)
 
   (evil-mode 1))
 

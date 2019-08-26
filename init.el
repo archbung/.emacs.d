@@ -192,9 +192,18 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (general-def
     :states 'normal
     :keymaps 'rust-mode-map
-    (kbd "TAB") 'company-indent-or-complete-common)
+    (kbd "<tab>") 'company-indent-or-complete-common)
+
+  (general-def
+    :states 'normal
+    :keymaps 'outline-minor-mode-map
+    (kbd "<tab>") 'outline-toggle-children)
 
   (general-create-definer leader-def :prefix "SPC")
+  (leader-def
+    :states 'visual
+    "c"   'comment-dwim)
+
   (leader-def
     :states 'normal
     "/ g" 'counsel-grep-or-swiper
@@ -363,10 +372,15 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 ;; Completion
 (use-package company
-  :hook ((rust-mode racer-mode) . company-mode)
+  :hook ((rust-mode racer-mode emacs-lisp-mode LaTeX-mode) . company-mode)
+  :bind (:map company-active-map
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous))
   :config
   (setq company-idle-delay 0.3
-        company-tooltip-align-annotations t))
+        company-tooltip-align-annotations t
+        company-minimum-prefix-length 1
+        company-selection-wrap-around t))
 
 
 ;; Snippets
@@ -447,7 +461,6 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 ;; Documents processing
 (use-package tex
-  :hook (LaTeX-mode . outline-minor-mode)
   :straight auctex
   :config
   (setq TeX-command-default "LatexMk"
@@ -455,6 +468,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
         font-latex-fontify-sectioning 'color)
   (add-to-list 'TeX-view-program-selection
                '(output-pdf "Zathura")))
+
+(use-package outline
+  :hook (LaTeX-mode . outline-minor-mode))
 
 (use-package auctex-latexmk
   :init

@@ -117,118 +117,63 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
+(use-package which-key
+  :config
+  (which-key-mode))
+
+(use-package undo-tree
+  :init
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
+  :hook
+  (undo-tree-visualizer-mode .
+	    (lambda ()
+	      (undo-tree-visualizer-selection-mode)
+	      (setq display-line-numbers nil)))
+  :config
+  (global-undo-tree-mode 1))
+
+
+;; Navigation
+(defun linum:relative ()
+  (setq-local display-line-numbers 'visual))
+
+(defun linum:absolute ()
+  (setq-local display-line-numbers t))
+
 (use-package evil
   :init
-  (setq evil-want-abbrev-expand-on-insert-exit nil)
+  (setq evil-want-abbrev-expand-on-insert-exit nil
+        evil-want-keybinding nil
+        evil-want-integration t)
   :config
-  (evil-set-initial-state 'ibuffer-mode 'normal)
-  (evil-define-key 'normal ibuffer-mode-map
-    (kbd "j") 'evil-next-line
-    (kbd "k") 'evil-previous-line
-    (kbd "J") 'ibuffer-jump-to-buffer
-    (kbd "l") 'ibuffer-visit-buffer)
-  (evil-set-initial-state 'org-agenda-mode 'motion)
-  (evil-define-key 'motion org-agenda-mode-map
-    (kbd "<tab>") 'org-agenda-goto
-    (kbd "<return>") 'org-agenda-switch-to
-    (kbd "M-<return>") 'org-agenda-recenter
-    "j" 'org-agenda-next-line
-    "k" 'org-agenda-previous-line
-    (kbd "t") 'org-agenda-todo
-    (kbd "u") 'org-agenda-undo
-    "gj" 'org-agenda-next-item
-    "gk" 'org-agenda-previous-item
-    (kbd "[") 'org-agenda-earlier
-    (kbd "]") 'org-agenda-later
-    "J" 'org-agenda-priority-down
-    "K" 'org-agenda-priority-up
-    "H" 'org-agenda-do-date-earlier
-    "L" 'org-agenda-do-date-later
-    )
-  (evil-define-key 'normal org-mode-map
-    (kbd "<return>") 'org-open-at-point)
-
-  (defun linum:relative ()
-    (setq-local display-line-numbers 'visual))
-
-  (defun linum:absolute ()
-    (setq-local display-line-numbers t))
-
   (add-hook 'evil-insert-state-entry-hook #'linum:absolute)
   (add-hook 'evil-insert-state-exit-hook #'linum:relative)
 
   (evil-mode 1))
 
 (use-package evil-surround
+  :after evil
   :hook (org-mode . (lambda () (push '(?m . ("\\( " . " \\)")) evil-surround-pairs-alist)))
   :config
   (global-evil-surround-mode 1))
 
-; Keybindings 2.0: electric boogaloo
-(use-package general
+(use-package evil-collection
+  :after evil
+  :config (evil-collection-init))
+
+(use-package evil-magit
   :config
-  (general-create-definer leader-def :prefix "SPC")
-  (leader-def 'normal
-    "/ g" 'counsel-grep-or-swiper
-    "/ /" 'swiper-isearch
-    "/ r" 'counsel-rg
-    "b b" 'counsel-ibuffer
-    "f r" 'counsel-recentf
-    "f f" 'counsel-find-file
-    "g s" 'magit-status
-    "h f" 'counsel-describe-function
-    "h v" 'counsel-describe-variable
-    "h m" 'describe-mode
-    "h i" 'info
-    "j c" 'avy-goto-char
-    "j l" 'avy-goto-line
-    "o l" 'org-store-link
-    "o a" 'org-agenda
-    "o c" 'org-capture
-    "p f" 'find-file-in-project
-    "p v" 'ffip-split-window-horizontally
-    "p s" 'ffip-split-window-vertically
-    "v u" 'undo-tree-visualize)
-  (general-create-definer localleader-def :prefix "SPC m")
-  (localleader-def 'normal
-    "j d" 'intero-goto-definition
+  (evil-define-key evil-magit-state magit-mode-map "?" 'evil-search-backward))
 
-    ;; Org-related
-    "a a" 'org-archive-subtree-default
-    "a t" 'org-toggle-archive-tag
+(use-package evil-org
+  :after org)
 
-    ; Time-related
-    "t ." 'org-time-stamp
-    "t !" 'org-time-stamp-inactive
-    "t d" 'org-deadline
-    "t s" 'org-schedule
-    "t e" 'org-clock-modify-effort-estimate
-    "t i" 'org-clock-in
-    "t o" 'org-clock-out
-    "t t" 'org-timer-set-timer
-    "t p" 'org-timer-pause-or-continue
-    "t T" 'org-timer-stop
+(use-package avy)
 
-    ; View-related
-    "/"   'org-sparse-tree
-    "v c" 'org-columns
-    "v h" 'outline-hide-entry
-    "v s" 'outline-show-entry
+(use-package ace-window)
 
-    ; Refile and copy
-    "r r" 'org-refile
-    "r y" 'org-copy
-    "r y" 'avy-org-refile-as-child
 
-    ; Properties-related
-    "p t" 'org-set-tags-command
-    "p s" 'org-set-property
-    "p d" 'org-delete-property
-
-    "c c" 'TeX-command-master
-
-    "b p" 'ledger-display-balance-at-point))
-
+;; Org
 (defun org-summary-todo (n-done n-not-done)
   "Switch entry to DONE when all subentries are DONE, to TODO otherwise."
   (let (org-log-done org-log-states)
@@ -260,6 +205,8 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
         )
   (org-clock-persistence-insinuate))
 
+
+;; Ivy
 (use-package counsel
   :config
   (ivy-mode 1)
@@ -272,37 +219,13 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 	counsel-grep-base-command
 	"rg -i -M 120 --no-heading --line-number --color never '%s' %s"))
 
+
+;; Project management
 (use-package magit)
-
-(use-package evil-magit
-  :config
-  (evil-define-key evil-magit-state magit-mode-map "?" 'evil-search-backward))
-
-(use-package avy)
 
 (use-package find-file-in-project
   :config
   (setq ffip-use-rust-fd t))
-
-(use-package which-key
-  :config
-  (which-key-mode))
-
-(use-package ace-window
-  ; TODO: learn how this package works
-  ; TODO: perhaps use a better keymap
-  :bind ("M-o" . ace-window))
-
-(use-package undo-tree
-  :init
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo")))
-  :hook
-  (undo-tree-visualizer-mode .
-	    (lambda ()
-	      (undo-tree-visualizer-selection-mode)
-	      (setq display-line-numbers nil)))
-  :config
-  (global-undo-tree-mode 1))
 
 
 ;; Snippets
@@ -318,8 +241,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :init
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (let ((current-hour (string-to-number (format-time-string "%H"))))
-    (if (or (< current-hour 6) (> current-hour 20)) (load-theme 'doom-one t) (load-theme 'doom-one-light t)))
+  (load-theme 'doom-dracula t)
   :config
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))

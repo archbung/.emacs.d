@@ -51,12 +51,7 @@
 (setq-default indent-tabs-mode nil)
 
 
-;; Line numbers
-(setq-default display-line-numbers 'visual)
-
-
 ;; Handle trailing whitespaces
-(setq-default show-trailing-whitespace t)
 (add-hook 'after-save-hook #'delete-trailing-whitespace)
 
 
@@ -134,21 +129,14 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 
 ;; Navigation
-(defun linum:relative ()
-  (setq-local display-line-numbers 'visual))
-
-(defun linum:absolute ()
-  (setq-local display-line-numbers t))
-
 (use-package evil
   :init
   (setq evil-want-abbrev-expand-on-insert-exit nil
         evil-want-keybinding nil
         evil-want-integration t)
   :config
-  (add-hook 'evil-insert-state-entry-hook #'linum:absolute)
-  (add-hook 'evil-insert-state-exit-hook #'linum:relative)
-
+  (evil-set-initial-state 'ibuffer-mode 'normal)
+  (evil-set-initial-state 'org-agenda-mode 'motion)
   (evil-mode 1))
 
 (use-package evil-surround
@@ -157,16 +145,148 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :config
   (global-evil-surround-mode 1))
 
-(use-package evil-collection
-  :after evil
-  :config (evil-collection-init))
-
 (use-package evil-magit
   :config
   (evil-define-key evil-magit-state magit-mode-map "?" 'evil-search-backward))
 
-(use-package evil-org
-  :after org)
+(use-package general
+  :config
+  (general-def
+    :states 'normal
+    :keymaps 'ibuffer-mode-map
+    (kbd "j") 'evil-next-line
+    (kbd "k") 'evil-previous-line
+    (kbd "J") 'ibuffer-jump-to-buffer
+    (kbd "l") 'ibuffer-visit-buffer)
+
+  (general-def
+    :states 'motion
+    :keymaps 'org-agenda-mode-map
+    (kbd "<tab>") 'org-agenda-goto
+    (kbd "<return>") 'org-agenda-switch-to
+    (kbd "M-<return>") 'org-agenda-recenter
+    "j" 'org-agenda-next-line
+    "k" 'org-agenda-previous-line
+    (kbd "t") 'org-agenda-todo
+    (kbd "u") 'org-agenda-undo
+    "gj" 'org-agenda-next-item
+    "gk" 'org-agenda-previous-item
+    (kbd "[") 'org-agenda-earlier
+    (kbd "]") 'org-agenda-later
+    "J" 'org-agenda-priority-down
+    "K" 'org-agenda-priority-up
+    "H" 'org-agenda-do-date-earlier
+    "L" 'org-agenda-do-date-later)
+
+  (general-def
+    :states 'normal
+    :keymaps 'org-mode-map
+    (kbd "<return>") 'org-open-at-point)
+
+  (general-def
+    :keymaps 'org-capture-mode-map
+    [remap evil-save-and-close]          'org-capture-finalize
+    [remap evil-save-modified-and-close] 'org-capture-finalize
+    [remap evil-quit]                    'org-capture-kill)
+
+  (general-create-definer leader-def :prefix "SPC")
+  (leader-def
+    :states 'normal
+    "/ g" 'counsel-grep-or-swiper
+    "/ r" 'counsel-rg
+
+    "b b" 'counsel-ibuffer
+
+    "f f" 'counsel-find-file
+    "f r" 'counsel-recentf
+
+    "g s" 'magit-status
+
+    "j c" 'avy-goto-char
+    "j l" 'avy-goto-line
+
+    "h f" 'counsel-describe-function
+    "h v" 'counsel-describe-variable
+    "h i" 'info
+    "h m" 'describe-mode
+    "h k" 'isearch-describe-key
+    "h K" 'general-describe-keybindings
+
+    "o a" 'org-agenda
+    "o c" 'org-capture
+    "o l" 'org-store-link
+
+    "p f" 'find-file-in-project
+    )
+
+  (general-create-definer localleader-def :prefix "SPC m")
+  (localleader-def
+    :states 'normal
+    :keymaps 'org-mode-map
+    "/"   'org-sparse-tree
+    "c"   'org-columns
+    "a a" 'org-archive-subtree-default
+
+    "p t" 'org-set-tags-command
+    "p a" 'org-toggle-archive-tag
+    "p s" 'org-set-property
+    "p d" 'org-delete-property
+
+    "t ." 'org-time-stamp
+    "t !" 'org-time-stamp-inactive
+    "t d" 'org-deadline
+    "t s" 'org-schedule
+    "t e" 'org-clock-modify-effort-estimate
+    "t i" 'org-clock-in
+    "t o" 'org-clock-out
+    "t t" 'org-timer-set-timer
+    "t p" 'org-timer-pause-or-continue
+    "t T" 'org-timer-stop
+
+    "r r" 'org-refile
+    "r y" 'org-copy
+    "r y" 'avy-org-refile-as-child)
+
+  (localleader-def
+    :states 'normal
+    :keymaps 'ledger-mode-map
+    "a"   'ledger-add-transaction
+
+    "r e" 'ledger-report-edit-report
+    "r r" 'ledger-report
+    "r n" 'ledger-report-next-month
+    "r p" 'ledger-report-previous-month
+
+    "R"   'ledger-reconcile
+    "b"   'ledger-display-balance-at-point)
+
+  (localleader-def
+    :states 'normal
+    :keymaps 'TeX-mode-map
+    "c"   'TeX-command-master)
+
+  (localleader-def
+    :states 'normal
+    :keymaps 'intero-mode-map
+    "a"   'intero-add-package
+    "l"   'intero-repl-load
+    "i"   'intero-info
+    "t"   'intero-type-at
+    "d"   'intero-goto-definition)
+
+  (localleader-def
+    :states 'normal
+    :keymaps 'cargo-minor-mode-map
+    "n"   'cargo-process-new
+    "r"   'cargo-process-run
+    "t"   'cargo-process-test
+    "c"   'cargo-process-build
+    "C"   'cargo-process-clean
+    "k"   'cargo-process-check
+    "K"   'cargo-process-clippy
+    "u"   'cargo-process-update
+    "U"   'cargo-process-upgrade)
+  )
 
 (use-package avy)
 

@@ -369,6 +369,10 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 (use-package flycheck-ledger
   :after flycheck)
 
+(use-package flycheck-rust
+  :after rust-mode
+  :hook (flycheck-mode . flycheck-rust-setup))
+
 
 ;; Completion
 (use-package company

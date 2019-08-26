@@ -189,6 +189,11 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
     [remap evil-save-modified-and-close] 'org-capture-finalize
     [remap evil-quit]                    'org-capture-kill)
 
+  (general-def
+    :states 'normal
+    :keymaps 'rust-mode-map
+    (kbd "TAB") 'company-indent-or-complete-common)
+
   (general-create-definer leader-def :prefix "SPC")
   (leader-def
     :states 'normal
@@ -348,6 +353,22 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (setq ffip-use-rust-fd t))
 
 
+;; Syntax checking
+(use-package flycheck
+  :hook (rust-mode . flycheck-mode))
+
+(use-package flycheck-ledger
+  :after flycheck)
+
+
+;; Completion
+(use-package company
+  :hook ((rust-mode racer-mode) . company-mode)
+  :config
+  (setq company-idle-delay 0.3
+        company-tooltip-align-annotations t))
+
+
 ;; Snippets
 (use-package yasnippet
   :config
@@ -410,10 +431,13 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 ;; Rust
 (use-package rust-mode
   :config
-  (add-hook 'rust-mode-hook 'cargo-minor-mode)
   (setq rust-format-on-save t))
 
-(use-package cargo)
+(use-package cargo
+  :hook (rust-mode . cargo-minor-mode))
+
+(use-package racer
+  :hook (rust-mode . racer-mode))
 
 
 ;; Z3
@@ -423,9 +447,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
 ;; Documents processing
 (use-package tex
+  :hook (LaTeX-mode . outline-minor-mode)
   :straight auctex
   :config
-  (add-hook 'LaTeX-mode-hook #'outline-minor-mode)
   (setq TeX-command-default "LatexMk"
         font-latex-fontify-script nil
         font-latex-fontify-sectioning 'color)
@@ -448,6 +472,9 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 (use-package spthy-mode
   :straight (spthy-mode :host github :repo "tamarin-prover/editors")
   :mode "\\.spthy\\'")
+
+(use-package eldoc
+  :hook (racer-mode . eldoc-mode))
 
 (use-package pkgbuild-mode)
 

@@ -206,6 +206,11 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
 
   (leader-def
     :states 'normal
+    :keymaps 'flyspell-mode-map
+    "s"   'flyspell-correct-wrapper)
+
+  (leader-def
+    :states 'normal
     "/ g" 'counsel-grep-or-swiper
     "/ r" 'counsel-rg
 
@@ -393,6 +398,19 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   (yas-global-mode 1))
 
 (use-package yasnippet-snippets)
+
+
+;; Spell checking
+(use-package flyspell
+  :hook ((text-mode . flyspell-mode)
+         (prog-mode . flyspell-prog-mode))
+  :config
+  (setq flyspell-issue-message-flag nil
+        ispell-dictionary "en_US"
+        ispell-program-name "hunspell"))
+
+(use-package flyspell-correct-ivy
+  :init (setq flyspell-correct-interface #'flyspell-correct-ivy))
 
 
 ;; Eye candies

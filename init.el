@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-(set-frame-font "Hack 10" nil t)
+(set-frame-font "Input Mono Narrow 11" nil t)
 
 ;; Cleaner UI
 (unless (eq window-system 'ns)
@@ -418,7 +418,7 @@ Set `SSH_AUTH_SOCK`, `SSH_AGENT_PID`, and `GPG_AGENT` in Emacs'
   :init
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
-  (load-theme 'doom-dracula t)
+  (load-theme 'doom-nord t)
   :config
   (doom-themes-visual-bell-config)
   (doom-themes-org-config))
